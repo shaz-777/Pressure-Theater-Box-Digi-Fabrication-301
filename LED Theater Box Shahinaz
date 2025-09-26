@@ -1,0 +1,34 @@
+const int leds[3] = {8, 9, 10};     
+const int sensorPin = 2;            
+
+int state = 0;        
+bool lastReading = 0; 
+
+void setup() {
+  for (int i = 0; i < 3; i++) {
+    pinMode(leds[i], OUTPUT);
+  }
+  pinMode(sensorPin, INPUT_PULLUP);
+}
+
+void loop() {
+  bool reading = digitalRead(sensorPin) == LOW; 
+
+  if (reading && !lastReading) {
+    state++;
+    if (state > 4) state = 0; 
+  }
+  lastReading = reading;
+
+  for (int i = 0; i < 3; i++) {
+    if (state == 0) {
+      digitalWrite(leds[i], LOW); 
+    } else if (state == 4) {
+      digitalWrite(leds[i], HIGH); 
+    } else {
+      digitalWrite(leds[i], (i == state - 1) ? HIGH : LOW);
+    }
+  }
+
+  delay(50); 
+}
