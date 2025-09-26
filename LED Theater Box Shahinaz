@@ -1,34 +1,40 @@
-const int leds[3] = {8, 9, 10};     
-const int sensorPin = 2;            
+// Pins for 3 LEDs
+const int leds[3] = {8, 9, 10};     //  The three working LEDs
+const int sensorPin = 2;            // sensor between pin 2 and GND
 
-int state = 0;        
-bool lastReading = 0; 
+int state = 0;        // step counter
+bool lastReading = 0; // for edge detection
 
 void setup() {
+  // LED pins as outputs
   for (int i = 0; i < 3; i++) {
     pinMode(leds[i], OUTPUT);
   }
-  pinMode(sensorPin, INPUT_PULLUP);
+  // sensor input
+  pinMode(sensorPin, INPUT_PULLUP); // sensor between pin 2 and GND
 }
 
 void loop() {
-  bool reading = digitalRead(sensorPin) == LOW; 
+  bool reading = digitalRead(sensorPin) == LOW; // pressed = LOW
 
+  // detect a new press
   if (reading && !lastReading) {
     state++;
-    if (state > 4) state = 0; 
+    if (state > 4) state = 0; // after 4th press go back to 0
   }
   lastReading = reading;
 
+  // control LEDs according to state
   for (int i = 0; i < 3; i++) {
     if (state == 0) {
-      digitalWrite(leds[i], LOW); 
+      digitalWrite(leds[i], LOW); // all off
     } else if (state == 4) {
-      digitalWrite(leds[i], HIGH); 
+      digitalWrite(leds[i], HIGH); // all on together
     } else {
+      // only one LED on
       digitalWrite(leds[i], (i == state - 1) ? HIGH : LOW);
     }
   }
 
-  delay(50); 
+  delay(50); // small debounce
 }
